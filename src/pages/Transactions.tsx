@@ -92,9 +92,11 @@ export default function Transactions() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium">{t.category}</p>
+                <p className="text-sm font-medium">
+                  {t.category}{t.subcategory ? ` · ${t.subcategory}` : ""}
+                </p>
                 <p className="text-xs text-muted-foreground truncate">
-                  {format(parseISO(t.date), "dd MMM yyyy")}
+                  {format(parseISO(t.date), "dd MMM yyyy")} {t.time ? `at ${t.time}` : ""}
                   {t.notes && ` · ${t.notes}`}
                 </p>
               </div>
