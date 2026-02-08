@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { LayoutDashboard, PlusCircle, List, Settings, Wallet } from "lucide-react";
+import QuickAddExpense from "@/components/QuickAddExpense";
 
 const navItems = [
   { to: "/", icon: LayoutDashboard, label: "Dashboard" },
@@ -50,6 +51,9 @@ export default function AppLayout({ children }: { children: ReactNode }) {
       <main className="flex-1 container px-4 py-6 pb-24 md:pb-6">
         {children}
       </main>
+
+      {/* Quick add FAB */}
+      <QuickAddExpense />
 
       {/* Mobile bottom nav */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 z-40 border-t bg-card/95 backdrop-blur-md">
