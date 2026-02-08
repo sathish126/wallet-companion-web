@@ -5,6 +5,7 @@ const KEYS = {
   fixedExpenses: "spendwise_fixed_expenses",
   budgets: "spendwise_budgets",
   settings: "spendwise_settings",
+  lockedMonths: "spendwise_locked_months",
 };
 
 function load<T>(key: string, fallback: T): T {
@@ -33,6 +34,9 @@ export const storage = {
   getSettings: (): AppSettings =>
     load(KEYS.settings, { currency: "INR", currencySymbol: "₹" }),
   saveSettings: (s: AppSettings) => save(KEYS.settings, s),
+
+  getLockedMonths: (): string[] => load(KEYS.lockedMonths, []),
+  saveLockedMonths: (m: string[]) => save(KEYS.lockedMonths, m),
 
   clearAll: () => {
     Object.values(KEYS).forEach((k) => localStorage.removeItem(k));

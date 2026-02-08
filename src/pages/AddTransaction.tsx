@@ -11,7 +11,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { format } from "date-fns";
 
 export default function AddTransaction() {
-  const { dispatch } = useFinance();
+  const { dispatch, isMonthLocked } = useFinance();
   const navigate = useNavigate();
   const { toast } = useToast();
 
@@ -31,6 +31,11 @@ export default function AddTransaction() {
     const parsedAmount = parseFloat(amount);
     if (!parsedAmount || parsedAmount <= 0 || !category || !date || !time) {
       toast({ title: "Please fill all required fields", variant: "destructive" });
+      return;
+    }
+
+    if (isMonthLocked(date)) {
+      toast({ title: "That month is locked. Unlock it in Dashboard first.", variant: "destructive" });
       return;
     }
 
