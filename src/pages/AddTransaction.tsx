@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useFinance } from "@/context/FinanceContext";
-import { EXPENSE_CATEGORIES, INCOME_CATEGORIES } from "@/models/types";
+import { EXPENSE_CATEGORIES, INCOME_CATEGORIES, FOOD_SUBCATEGORIES } from "@/models/types";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -18,22 +18,33 @@ export default function AddTransaction() {
   const [type, setType] = useState<"income" | "expense">("expense");
   const [amount, setAmount] = useState("");
   const [category, setCategory] = useState("");
+  const [subcategory, setSubcategory] = useState("");
   const [date, setDate] = useState(format(new Date(), "yyyy-MM-dd"));
+  const [time, setTime] = useState(format(new Date(), "HH:mm"));
   const [notes, setNotes] = useState("");
 
   const categories = type === "income" ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+  const showSubcategory = type === "expense" && category === "Food";
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const parsedAmount = parseFloat(amount);
-    if (!parsedAmount || parsedAmount <= 0 || !category || !date) {
+    if (!parsedAmount || parsedAmount <= 0 || !category || !date || !time) {
       toast({ title: "Please fill all required fields", variant: "destructive" });
       return;
     }
 
     dispatch({
       type: "ADD_TRANSACTION",
-      payload: { type, amount: parsedAmount, category, date, notes: notes.trim() },
+      payload: {
+        type,
+        amount: parsedAmount,
+        category,
+        subcategory: showSubcategory ? subcategory : undefined,
+        date,
+        time,
+        notes: notes.trim(),
+      },
     });
 
     toast({ title: `${type === "income" ? "Income" : "Expense"} added!` });
@@ -52,7 +63,7 @@ export default function AddTransaction() {
         <div className="flex rounded-xl border bg-muted p-1 gap-1">
           <button
             type="button"
-            onClick={() => { setType("income"); setCategory(""); }}
+            onClick={() => { setType("income"); setCategory(""); setSubcategory(""); }}
             className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${
               type === "income" ? "bg-income text-income-foreground shadow-sm" : "text-muted-foreground"
             }`}
@@ -61,7 +72,7 @@ export default function AddTransaction() {
           </button>
           <button
             type="button"
-            onClick={() => { setType("expense"); setCategory(""); }}
+            onClick={() => { setType("expense"); setCategory(""); setSubcategory(""); }}
             className={`flex-1 py-2.5 rounded-lg text-sm font-medium transition-all ${
               type === "expense" ? "bg-expense text-expense-foreground shadow-sm" : "text-muted-foreground"
             }`}
@@ -87,7 +98,7 @@ export default function AddTransaction() {
 
         <div className="space-y-2">
           <Label>Category</Label>
-          <Select value={category} onValueChange={setCategory} required>
+          <Select value={category} onValueChange={(v) => { setCategory(v); setSubcategory(""); }} required>
             <SelectTrigger className="h-12">
               <SelectValue placeholder="Select category" />
             </SelectTrigger>
@@ -99,9 +110,31 @@ export default function AddTransaction() {
           </Select>
         </div>
 
-        <div className="space-y-2">
-          <Label htmlFor="date">Date</Label>
-          <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-12" required />
+        {showSubcategory && (
+          <div className="space-y-2 animate-fade-in">
+            <Label>What type of food?</Label>
+            <Select value={subcategory} onValueChange={setSubcategory}>
+              <SelectTrigger className="h-12">
+                <SelectValue placeholder="e.g. Tea, Coffee, Snacks..." />
+              </SelectTrigger>
+              <SelectContent>
+                {FOOD_SUBCATEGORIES.map((s) => (
+                  <SelectItem key={s} value={s}>{s}</SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
+        )}
+
+        <div className="grid grid-cols-2 gap-3">
+          <div className="space-y-2">
+            <Label htmlFor="date">Date</Label>
+            <Input id="date" type="date" value={date} onChange={(e) => setDate(e.target.value)} className="h-12" required />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="time">Time</Label>
+            <Input id="time" type="time" value={time} onChange={(e) => setTime(e.target.value)} className="h-12" required />
+          </div>
         </div>
 
         <div className="space-y-2">

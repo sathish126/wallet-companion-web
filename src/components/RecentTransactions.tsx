@@ -32,8 +32,12 @@ export default function RecentTransactions({ transactions }: Props) {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium truncate">{t.category}</p>
-                <p className="text-xs text-muted-foreground">{format(parseISO(t.date), "dd MMM")}</p>
+                <p className="text-sm font-medium truncate">
+                  {t.category}{t.subcategory ? ` · ${t.subcategory}` : ""}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {format(parseISO(t.date), "dd MMM")} {t.time ? `at ${t.time}` : ""}
+                </p>
               </div>
               <span
                 className={`font-mono text-sm font-semibold ${

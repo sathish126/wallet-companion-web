@@ -3,7 +3,9 @@ export interface Transaction {
   type: "income" | "expense";
   amount: number;
   category: string;
+  subcategory?: string;
   date: string; // ISO date
+  time: string; // HH:mm
   notes: string;
 }
 
@@ -31,6 +33,17 @@ export const EXPENSE_CATEGORIES = [
   "Shopping",
   "Entertainment",
   "Medical",
+  "Others",
+] as const;
+
+export const FOOD_SUBCATEGORIES = [
+  "Tea",
+  "Coffee",
+  "Snacks",
+  "Breakfast",
+  "Lunch",
+  "Dinner",
+  "Groceries",
   "Others",
 ] as const;
 
